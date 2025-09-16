@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import uploadRoutes from './routes/upload.js';
 import metabaseRoutes from './routes/metabase.js';
-import biRoutes from './routes/bi.js';
+// import biRoutes from './routes/bi.js';
 
 dotenv.config();
 
@@ -30,8 +30,8 @@ app.use('/upload-proxy', uploadRoutes);
 console.log('✅ Upload routes registradas');
 app.use('/api/metabase', metabaseRoutes);
 console.log('✅ Metabase routes registradas');
-app.use(biRoutes);
-console.log('✅ BI routes registradas');
+// app.use(biRoutes);
+// console.log('✅ BI routes registradas');
 
 // Health check
 app.get('/health', (req, res) => {
