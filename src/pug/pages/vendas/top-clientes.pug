@@ -1,0 +1,409 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/widgets/Stats
+include ../../mixins/home/dashboard/CardStatistics
+include ../../mixins/widgets/Tables
+
+block content
+  +overrideStyles
+
+block mainContent
+  if ENV === 'PROD'
+    +LayoutContentProd
+  else
+    +LayoutContent
+
+  .content
+    .container-fluid
+      h3.mb-3 Top Clientes - Vendas & Comercial
+      .alert.alert-success.mb-3 
+        i.fas.fa-trophy.me-2
+        | Ranking dos principais clientes por faturamento e análise de performance.
+
+      // Filtros
+      .row.mb-4
+        .col-12
+          .card
+            .card-body
+              .d-flex.align-items-center.gap-3.flex-wrap
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Empresa:
+                  select.form-select.form-select-sm.w-auto#empresa-select
+                    option(value="copaderma") Copaderma
+                    option(value="dermacenter") Dermacenter
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Período:
+                  .btn-group(role="group")
+                    input.btn-check(type="radio" name="periodo" id="30d" value="30")
+                    label.btn.btn-outline-primary.btn-sm(for="30d") 30d
+                    input.btn-check(type="radio" name="periodo" id="90d" value="90" checked)
+                    label.btn.btn-outline-primary.btn-sm(for="90d") 90d
+                    input.btn-check(type="radio" name="periodo" id="180d" value="180")
+                    label.btn.btn-outline-primary.btn-sm(for="180d") 180d
+                    input.btn-check(type="radio" name="periodo" id="360d" value="360")
+                    label.btn.btn-outline-primary.btn-sm(for="360d") 360d
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Ordenar por:
+                  select.form-select.form-select-sm.w-auto#ordem-select
+                    option(value="faturamento") Faturamento
+                    option(value="pedidos") Número de Pedidos
+                    option(value="ticket") Ticket Médio
+                    option(value="crescimento") Crescimento
+
+      // Cards de Resumo
+      .row.g-3.mb-4
+        .col-md-6.col-xl-3
+          .card.h-100.border-primary
+            .card-body.text-center
+              .display-4.text-primary.mb-2 25
+              h5.mb-1 Total Clientes
+              p.text-muted.mb-0 Base ativa no período
+        .col-md-6.col-xl-3
+          .card.h-100.border-success
+            .card-body.text-center
+              .display-4.text-success.mb-2 R$ 287k
+              h5.mb-1 Faturamento Total
+              p.text-muted.mb-0 Soma do período
+        .col-md-6.col-xl-3
+          .card.h-100.border-warning
+            .card-body.text-center
+              .display-4.text-warning.mb-2 R$ 11.5k
+              h5.mb-1 Ticket Médio
+              p.text-muted.mb-0 Valor médio por cliente
+        .col-md-6.col-xl-3
+          .card.h-100.border-info
+            .card-body.text-center
+              .display-4.text-info.mb-2 46.1%
+              h5.mb-1 Top 3 Concentração
+              p.text-muted.mb-0 Participação acumulada
+
+      // Gráfico de Barras Horizontais
+      .row.mb-4
+        .col-12
+          .card
+            .card-header
+              h5.mb-0 Faturamento por Cliente - Top 10
+              p.text-muted.mb-0 Ranking visual dos principais clientes
+            .card-body
+              canvas#topClientesChart(style="height: 400px;")
+
+      // Tabela Detalhada com Ranking
+      .row
+        .col-12
+          .card
+            .card-header.d-flex.justify-content-between.align-items-center
+              div
+                h5.mb-0 Ranking Completo de Clientes
+                p.text-muted.mb-0 Performance detalhada por cliente
+              .d-flex.gap-2
+                button.btn.btn-sm.btn-outline-primary
+                  i.fas.fa-chart-bar.me-1
+                  | Gráficos
+                button.btn.btn-sm.btn-outline-primary
+                  i.fas.fa-download.me-1
+                  | Exportar
+                button.btn.btn-sm.btn-primary
+                  i.fas.fa-envelope.me-1
+                  | Campanha VIP
+            .card-body
+              .table-responsive
+                table.table.table-hover
+                  thead.table-light
+                    tr
+                      th.text-center #
+                      th Cliente
+                      th.text-end Faturamento
+                      th.text-center Pedidos
+                      th.text-end Ticket Médio
+                      th.text-center Participação
+                      th.text-center Crescimento
+                      th.text-center Ações
+                  tbody
+                    tr.table-warning
+                      td.text-center
+                        .badge.bg-warning.text-dark
+                          i.fas.fa-trophy.me-1
+                          | 1º
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-3
+                            .avatar-name.rounded-circle.bg-soft-primary.text-primary IL
+                          div
+                            h6.mb-0 Instituto L
+                            small.text-muted São Paulo, SP • Premium
+                            br
+                            small.text-success
+                              i.fas.fa-star.me-1
+                              | Cliente VIP
+                      td.text-end
+                        strong R$ 48.570
+                        br
+                        small.text-muted vs R$ 42.100 (ant.)
+                      td.text-center
+                        strong 21
+                        br
+                        small.text-muted vs 18 (ant.)
+                      td.text-end
+                        strong R$ 2.313
+                        br
+                        small.text-muted vs R$ 2.339 (ant.)
+                      td.text-center
+                        .d-flex.align-items-center.justify-content-center
+                          .progress.me-2(style="width: 60px; height: 8px;")
+                            .progress-bar.bg-primary(style="width: 22.1%;")
+                          strong 22.1%
+                      td.text-center
+                        span.badge.bg-success
+                          i.fas.fa-arrow-up.me-1
+                          | +15.4%
+                      td.text-center
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary(title="Ver Detalhes")
+                            i.fas.fa-eye
+                          button.btn.btn-outline-success(title="Contatar")
+                            i.fas.fa-phone
+
+                    tr.table-light
+                      td.text-center
+                        .badge.bg-secondary
+                          | 2º
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-3
+                            .avatar-name.rounded-circle.bg-soft-success.text-success CA
+                          div
+                            h6.mb-0 Clínica Alpha
+                            small.text-muted São Paulo, SP • Premium
+                            br
+                            small.text-warning
+                              i.fas.fa-exclamation-triangle.me-1
+                              | Em Risco
+                      td.text-end
+                        strong R$ 32.791
+                        br
+                        small.text-muted vs R$ 35.200 (ant.)
+                      td.text-center
+                        strong 17
+                        br
+                        small.text-muted vs 19 (ant.)
+                      td.text-end
+                        strong R$ 1.929
+                        br
+                        small.text-muted vs R$ 1.853 (ant.)
+                      td.text-center
+                        .d-flex.align-items-center.justify-content-center
+                          .progress.me-2(style="width: 60px; height: 8px;")
+                            .progress-bar.bg-success(style="width: 14.9%;")
+                          strong 14.9%
+                      td.text-center
+                        span.badge.bg-danger
+                          i.fas.fa-arrow-down.me-1
+                          | -6.8%
+                      td.text-center
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary(title="Ver Detalhes")
+                            i.fas.fa-eye
+                          button.btn.btn-outline-warning(title="Reativar")
+                            i.fas.fa-exclamation-triangle
+
+                    tr
+                      td.text-center
+                        .badge.bg-secondary
+                          | 3º
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-3
+                            .avatar-name.rounded-circle.bg-soft-info.text-info DB
+                          div
+                            h6.mb-0 Dermacenter BV
+                            small.text-muted Belo Horizonte, MG • Standard
+                      td.text-end
+                        strong R$ 20.045
+                        br
+                        small.text-muted vs R$ 18.900 (ant.)
+                      td.text-center
+                        strong 12
+                        br
+                        small.text-muted vs 11 (ant.)
+                      td.text-end
+                        strong R$ 1.670
+                        br
+                        small.text-muted vs R$ 1.718 (ant.)
+                      td.text-center
+                        .d-flex.align-items-center.justify-content-center
+                          .progress.me-2(style="width: 60px; height: 8px;")
+                            .progress-bar.bg-info(style="width: 9.1%;")
+                          strong 9.1%
+                      td.text-center
+                        span.badge.bg-success
+                          i.fas.fa-arrow-up.me-1
+                          | +6.1%
+                      td.text-center
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary(title="Ver Detalhes")
+                            i.fas.fa-eye
+                          button.btn.btn-outline-success(title="Contatar")
+                            i.fas.fa-phone
+
+                    tr
+                      td.text-center
+                        .badge.bg-secondary
+                          | 4º
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-3
+                            .avatar-name.rounded-circle.bg-soft-warning.text-warning ES
+                          div
+                            h6.mb-0 Estética Sublime
+                            small.text-muted Curitiba, PR • Standard
+                      td.text-end
+                        strong R$ 18.230
+                        br
+                        small.text-muted vs R$ 16.800 (ant.)
+                      td.text-center
+                        strong 14
+                        br
+                        small.text-muted vs 13 (ant.)
+                      td.text-end
+                        strong R$ 1.302
+                        br
+                        small.text-muted vs R$ 1.292 (ant.)
+                      td.text-center
+                        .d-flex.align-items-center.justify-content-center
+                          .progress.me-2(style="width: 60px; height: 8px;")
+                            .progress-bar.bg-warning(style="width: 8.3%;")
+                          strong 8.3%
+                      td.text-center
+                        span.badge.bg-success
+                          i.fas.fa-arrow-up.me-1
+                          | +8.5%
+                      td.text-center
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary(title="Ver Detalhes")
+                            i.fas.fa-eye
+                          button.btn.btn-outline-success(title="Contatar")
+                            i.fas.fa-phone
+
+                    tr
+                      td.text-center
+                        .badge.bg-secondary
+                          | 5º
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-3
+                            .avatar-name.rounded-circle.bg-soft-secondary.text-secondary BC
+                          div
+                            h6.mb-0 Beauty Center
+                            small.text-muted Rio de Janeiro, RJ • Standard
+                      td.text-end
+                        strong R$ 15.890
+                        br
+                        small.text-muted vs R$ 14.200 (ant.)
+                      td.text-center
+                        strong 10
+                        br
+                        small.text-muted vs 9 (ant.)
+                      td.text-end
+                        strong R$ 1.589
+                        br
+                        small.text-muted vs R$ 1.578 (ant.)
+                      td.text-center
+                        .d-flex.align-items-center.justify-content-center
+                          .progress.me-2(style="width: 60px; height: 8px;")
+                            .progress-bar.bg-secondary(style="width: 7.2%;")
+                          strong 7.2%
+                      td.text-center
+                        span.badge.bg-success
+                          i.fas.fa-arrow-up.me-1
+                          | +11.9%
+                      td.text-center
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary(title="Ver Detalhes")
+                            i.fas.fa-eye
+                          button.btn.btn-outline-success(title="Contatar")
+                            i.fas.fa-phone
+
+              .card-footer.text-center
+                button.btn.btn-outline-primary Carregar mais clientes
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dados para gráfico de barras horizontais
+      const topClientesData = {
+        labels: ['Instituto L', 'Clínica Alpha', 'Dermacenter BV', 'Estética Sublime', 'Beauty Center', 'Skin Care Pro', 'Derma Clinic', 'Estética Plus', 'Beauty Lab', 'Laser Center'],
+        datasets: [{
+          label: 'Faturamento (R$)',
+          data: [48570, 32791, 20045, 18230, 15890, 12450, 10890, 9650, 8750, 7890],
+          backgroundColor: [
+            '#2c7be5', '#00d97e', '#39afd1', '#ffb400', '#6c757d',
+            '#e63757', '#fd7e14', '#6f42c1', '#20c997', '#ffc107'
+          ],
+          borderColor: '#fff',
+          borderWidth: 1
+        }]
+      };
+
+      const topClientesConfig = {
+        type: 'bar',
+        data: topClientesData,
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return 'R$ ' + context.parsed.x.toLocaleString('pt-BR');
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Faturamento (R$)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return 'R$ ' + value.toLocaleString('pt-BR');
+                }
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Clientes'
+              }
+            }
+          }
+        }
+      };
+
+      // Inicializar gráfico
+      const ctx = document.getElementById('topClientesChart').getContext('2d');
+      new Chart(ctx, topClientesConfig);
+
+      // Event listeners para filtros
+      const empresaSelect = document.getElementById('empresa-select');
+      const ordemSelect = document.getElementById('ordem-select');
+      const periodoInputs = document.querySelectorAll('input[name="periodo"]');
+      
+      function atualizarDados() {
+        const empresa = empresaSelect.value;
+        const ordem = ordemSelect.value;
+        const periodo = document.querySelector('input[name="periodo"]:checked').value;
+        console.log(`Atualizando top clientes para ${empresa} - Ordem: ${ordem} - ${periodo} dias`);
+        // Aqui seria feita a chamada para o Supabase/Metabase
+      }
+      
+      empresaSelect.addEventListener('change', atualizarDados);
+      ordemSelect.addEventListener('change', atualizarDados);
+      periodoInputs.forEach(input => {
+        input.addEventListener('change', atualizarDados);
+      });
+    });

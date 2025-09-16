@@ -1,0 +1,270 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/widgets/Stats
+include ../../mixins/home/dashboard/CardStatistics
+include ../../mixins/widgets/Tables
+
+block content
+  +overrideStyles
+
+block mainContent
+  if ENV === 'PROD'
+    +LayoutContentProd
+  else
+    +LayoutContent
+
+  .content
+    .container-fluid
+      h3.mb-3 Radar Reativação - Vendas & Comercial
+      .alert.alert-warning.mb-3 
+        i.fas.fa-exclamation-triangle.me-2
+        | Clientes em risco de churn que precisam de atenção imediata para reativação.
+
+      // Filtros
+      .row.mb-4
+        .col-12
+          .card
+            .card-body
+              .d-flex.align-items-center.gap-3.flex-wrap
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Empresa:
+                  select.form-select.form-select-sm.w-auto#empresa-select
+                    option(value="copaderma") Copaderma
+                    option(value="dermacenter") Dermacenter
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Nível de Risco:
+                  select.form-select.form-select-sm.w-auto#risco-select
+                    option(value="todos") Todos
+                    option(value="alto") Alto Risco
+                    option(value="medio") Médio Risco
+                    option(value="baixo") Baixo Risco
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Ordenar por:
+                  select.form-select.form-select-sm.w-auto#ordem-select
+                    option(value="dias") Dias sem comprar
+                    option(value="valor") Valor histórico
+                    option(value="risco") Nível de risco
+
+      // Cards de Resumo
+      .row.g-3.mb-4
+        .col-md-6.col-xl-3
+          .card.h-100.border-danger
+            .card-body.text-center
+              .display-4.text-danger.mb-2 12
+              h5.mb-1 Alto Risco
+              p.text-muted.mb-0 Ação imediata necessária
+        .col-md-6.col-xl-3
+          .card.h-100.border-warning
+            .card-body.text-center
+              .display-4.text-warning.mb-2 18
+              h5.mb-1 Médio Risco
+              p.text-muted.mb-0 Monitoramento próximo
+        .col-md-6.col-xl-3
+          .card.h-100.border-info
+            .card-body.text-center
+              .display-4.text-info.mb-2 25
+              h5.mb-1 Baixo Risco
+              p.text-muted.mb-0 Acompanhamento regular
+        .col-md-6.col-xl-3
+          .card.h-100.border-success
+            .card-body.text-center
+              .display-4.text-success.mb-2 R$ 287k
+              h5.mb-1 Valor em Risco
+              p.text-muted.mb-0 Faturamento potencial
+
+      // Lista de Clientes em Risco
+      .row
+        .col-12
+          .card
+            .card-header.d-flex.justify-content-between.align-items-center
+              div
+                h5.mb-0 Clientes para Reativação
+                p.text-muted.mb-0 Lista priorizada por risco de churn
+              .d-flex.gap-2
+                button.btn.btn-sm.btn-outline-primary
+                  i.fas.fa-download.me-1
+                  | Exportar
+                button.btn.btn-sm.btn-primary
+                  i.fas.fa-envelope.me-1
+                  | Campanha Email
+            .card-body.p-0
+              .list-group.list-group-flush
+                // Cliente Alto Risco 1
+                .list-group-item.border-start.border-danger.border-4
+                  .d-flex.justify-content-between.align-items-start
+                    .d-flex.align-items-center
+                      .avatar.avatar-xl.me-3
+                        .avatar-name.rounded-circle.bg-soft-danger.text-danger CA
+                      div
+                        h6.mb-1 Clínica Alpha
+                        p.text-muted.mb-1 São Paulo, SP • contato@clinicaalpha.com.br
+                        .d-flex.align-items-center.gap-3.small
+                          span
+                            i.fas.fa-calendar-times.text-danger.me-1
+                            strong 48 dias sem comprar
+                          span
+                            i.fas.fa-clock.text-muted.me-1
+                            | Ciclo: 30 dias
+                          span
+                            i.fas.fa-chart-line.text-success.me-1
+                            | R$ 15.400 (90d)
+                    .d-flex.flex-column.align-items-end.gap-2
+                      span.badge.bg-danger Alto Risco
+                      .btn-group.btn-group-sm
+                        button.btn.btn-outline-primary
+                          i.fas.fa-phone
+                        button.btn.btn-outline-primary
+                          i.fas.fa-envelope
+                        button.btn.btn-outline-primary
+                          i.fas.fa-whatsapp
+
+                // Cliente Alto Risco 2
+                .list-group-item.border-start.border-danger.border-4
+                  .d-flex.justify-content-between.align-items-start
+                    .d-flex.align-items-center
+                      .avatar.avatar-xl.me-3
+                        .avatar-name.rounded-circle.bg-soft-danger.text-danger IL
+                      div
+                        h6.mb-1 Instituto Laser
+                        p.text-muted.mb-1 Rio de Janeiro, RJ • contato@institutolaser.com.br
+                        .d-flex.align-items-center.gap-3.small
+                          span
+                            i.fas.fa-calendar-times.text-danger.me-1
+                            strong 65 dias sem comprar
+                          span
+                            i.fas.fa-clock.text-muted.me-1
+                            | Ciclo: 30 dias
+                          span
+                            i.fas.fa-chart-line.text-success.me-1
+                            | R$ 8.750 (90d)
+                    .d-flex.flex-column.align-items-end.gap-2
+                      span.badge.bg-danger Alto Risco
+                      .btn-group.btn-group-sm
+                        button.btn.btn-outline-primary
+                          i.fas.fa-phone
+                        button.btn.btn-outline-primary
+                          i.fas.fa-envelope
+                        button.btn.btn-outline-primary
+                          i.fas.fa-whatsapp
+
+                // Cliente Médio Risco 1
+                .list-group-item.border-start.border-warning.border-4
+                  .d-flex.justify-content-between.align-items-start
+                    .d-flex.align-items-center
+                      .avatar.avatar-xl.me-3
+                        .avatar-name.rounded-circle.bg-soft-warning.text-warning DB
+                      div
+                        h6.mb-1 Dermacenter BV
+                        p.text-muted.mb-1 Belo Horizonte, MG • contato@dermacenter.com.br
+                        .d-flex.align-items-center.gap-3.small
+                          span
+                            i.fas.fa-calendar-times.text-warning.me-1
+                            strong 42 dias sem comprar
+                          span
+                            i.fas.fa-clock.text-muted.me-1
+                            | Ciclo: 35 dias
+                          span
+                            i.fas.fa-chart-line.text-success.me-1
+                            | R$ 11.230 (90d)
+                    .d-flex.flex-column.align-items-end.gap-2
+                      span.badge.bg-warning Médio Risco
+                      .btn-group.btn-group-sm
+                        button.btn.btn-outline-primary
+                          i.fas.fa-phone
+                        button.btn.btn-outline-primary
+                          i.fas.fa-envelope
+                        button.btn.btn-outline-primary
+                          i.fas.fa-whatsapp
+
+                // Cliente Médio Risco 2
+                .list-group-item.border-start.border-warning.border-4
+                  .d-flex.justify-content-between.align-items-start
+                    .d-flex.align-items-center
+                      .avatar.avatar-xl.me-3
+                        .avatar-name.rounded-circle.bg-soft-warning.text-warning ES
+                      div
+                        h6.mb-1 Estética Sublime
+                        p.text-muted.mb-1 Curitiba, PR • contato@esteticasublime.com.br
+                        .d-flex.align-items-center.gap-3.small
+                          span
+                            i.fas.fa-calendar-times.text-warning.me-1
+                            strong 58 dias sem comprar
+                          span
+                            i.fas.fa-clock.text-muted.me-1
+                            | Ciclo: 40 dias
+                          span
+                            i.fas.fa-chart-line.text-success.me-1
+                            | R$ 9.890 (90d)
+                    .d-flex.flex-column.align-items-end.gap-2
+                      span.badge.bg-warning Médio Risco
+                      .btn-group.btn-group-sm
+                        button.btn.btn-outline-primary
+                          i.fas.fa-phone
+                        button.btn.btn-outline-primary
+                          i.fas.fa-envelope
+                        button.btn.btn-outline-primary
+                          i.fas.fa-whatsapp
+
+                // Cliente Baixo Risco 1
+                .list-group-item.border-start.border-info.border-4
+                  .d-flex.justify-content-between.align-items-start
+                    .d-flex.align-items-center
+                      .avatar.avatar-xl.me-3
+                        .avatar-name.rounded-circle.bg-soft-info.text-info BC
+                      div
+                        h6.mb-1 Beauty Center
+                        p.text-muted.mb-1 Rio de Janeiro, RJ • contato@beautycenter.com.br
+                        .d-flex.align-items-center.gap-3.small
+                          span
+                            i.fas.fa-calendar-times.text-info.me-1
+                            strong 35 dias sem comprar
+                          span
+                            i.fas.fa-clock.text-muted.me-1
+                            | Ciclo: 45 dias
+                          span
+                            i.fas.fa-chart-line.text-success.me-1
+                            | R$ 7.650 (90d)
+                    .d-flex.flex-column.align-items-end.gap-2
+                      span.badge.bg-info Baixo Risco
+                      .btn-group.btn-group-sm
+                        button.btn.btn-outline-primary
+                          i.fas.fa-phone
+                        button.btn.btn-outline-primary
+                          i.fas.fa-envelope
+                        button.btn.btn-outline-primary
+                          i.fas.fa-whatsapp
+
+              .card-footer.text-center
+                button.btn.btn-outline-primary Carregar mais clientes
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Radar Reativação - Dashboard carregado');
+      
+      // Event listeners para filtros
+      const empresaSelect = document.getElementById('empresa-select');
+      const riscoSelect = document.getElementById('risco-select');
+      const ordemSelect = document.getElementById('ordem-select');
+      
+      function atualizarDados() {
+        const empresa = empresaSelect.value;
+        const risco = riscoSelect.value;
+        const ordem = ordemSelect.value;
+        console.log(`Atualizando radar para ${empresa} - Risco: ${risco} - Ordem: ${ordem}`);
+        // Aqui seria feita a chamada para o Supabase/Metabase
+      }
+      
+      empresaSelect.addEventListener('change', atualizarDados);
+      riscoSelect.addEventListener('change', atualizarDados);
+      ordemSelect.addEventListener('change', atualizarDados);
+      
+      // Simular ações de contato
+      document.querySelectorAll('.btn-group-sm .btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const action = this.querySelector('i').classList.contains('fa-phone') ? 'Ligação' :
+                        this.querySelector('i').classList.contains('fa-envelope') ? 'Email' : 'WhatsApp';
+          console.log(`Ação: ${action} iniciada`);
+          // Aqui seria integrado com sistemas de CRM/comunicação
+        });
+      });
+    });

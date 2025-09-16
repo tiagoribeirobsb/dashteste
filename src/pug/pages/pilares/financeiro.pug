@@ -1,0 +1,136 @@
+extends ../../layouts/LayoutTheme
+
+append content
+  .container-xxl.px-3.px-md-4.my-4
+    h4.mb-3 Financeiro & Resultado
+    .alert.alert-info.mb-4
+      | Esta seção faz parte dos 5 Pilares do IA Bridge.
+      | Dados em tempo real integrados com Metabase.
+
+    // Seção de KPIs principais
+    .row.mb-4
+      .col-md-3
+        .card.border-0.shadow-sm
+          .card-body.text-center
+            .metabase-card(data-card-id="1" data-type="kpi" data-title="Receita Total")
+              .spinner-border.text-primary(role="status")
+                span.visually-hidden Carregando...
+              .mt-2.text-muted Carregando receita...
+      .col-md-3
+        .card.border-0.shadow-sm
+          .card-body.text-center
+            .metabase-card(data-card-id="2" data-type="kpi" data-title="Margem Bruta")
+              .spinner-border.text-success(role="status")
+                span.visually-hidden Carregando...
+              .mt-2.text-muted Carregando margem...
+      .col-md-3
+        .card.border-0.shadow-sm
+          .card-body.text-center
+            .metabase-card(data-card-id="3" data-type="kpi" data-title="Custos Operacionais")
+              .spinner-border.text-warning(role="status")
+                span.visually-hidden Carregando...
+              .mt-2.text-muted Carregando custos...
+      .col-md-3
+        .card.border-0.shadow-sm
+          .card-body.text-center
+            .metabase-card(data-card-id="4" data-type="kpi" data-title="Lucro Líquido")
+              .spinner-border.text-info(role="status")
+                span.visually-hidden Carregando...
+              .mt-2.text-muted Carregando lucro...
+
+    // Seção de gráficos principais
+    .row.mb-4
+      .col-lg-8
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-bottom
+            h5.mb-0 Evolução da Receita
+          .card-body
+            .metabase-card(data-card-id="5" data-type="chart" data-title="Evolução da Receita" data-height="400")
+              .d-flex.justify-content-center.align-items-center(style="height: 400px;")
+                .spinner-border.text-primary(role="status")
+                  span.visually-hidden Carregando gráfico...
+      .col-lg-4
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-bottom
+            h5.mb-0 Distribuição de Custos
+          .card-body
+            .metabase-card(data-card-id="6" data-type="chart" data-title="Distribuição de Custos" data-height="400")
+              .d-flex.justify-content-center.align-items-center(style="height: 400px;")
+                .spinner-border.text-primary(role="status")
+                  span.visually-hidden Carregando gráfico...
+
+    // Seção de análises detalhadas
+    .row.mb-4
+      .col-lg-6
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-bottom
+            h5.mb-0 Top Clientes por Receita
+          .card-body
+            .metabase-card(data-card-id="7" data-type="table" data-title="Top Clientes" data-height="350")
+              .d-flex.justify-content-center.align-items-center(style="height: 350px;")
+                .spinner-border.text-primary(role="status")
+                  span.visually-hidden Carregando tabela...
+      .col-lg-6
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-bottom
+            h5.mb-0 Análise de Margem por Produto
+          .card-body
+            .metabase-card(data-card-id="8" data-type="chart" data-title="Margem por Produto" data-height="350")
+              .d-flex.justify-content-center.align-items-center(style="height: 350px;")
+                .spinner-border.text-primary(role="status")
+                  span.visually-hidden Carregando análise...
+
+    // Seção de controles e filtros
+    .row.mb-4
+      .col-12
+        .card.border-0.shadow-sm
+          .card-header.bg-light.border-bottom
+            .row.align-items-center
+              .col-md-6
+                h5.mb-0 Filtros e Controles
+              .col-md-6.text-end
+                .btn-group(role="group")
+                  button.btn.btn-outline-primary.btn-sm#refreshAll Atualizar Todos
+                  button.btn.btn-outline-secondary.btn-sm#clearCache Limpar Cache
+          .card-body
+            .row
+              .col-md-3
+                label.form-label Período
+                select.form-select#periodFilter
+                  option(value="7d") Últimos 7 dias
+                  option(value="30d" selected) Últimos 30 dias
+                  option(value="90d") Últimos 90 dias
+                  option(value="1y") Último ano
+              .col-md-3
+                label.form-label Tenant
+                select.form-select#tenantFilter
+                  option(value="default" selected) Padrão
+                  option(value="empresa1") Empresa 1
+                  option(value="empresa2") Empresa 2
+              .col-md-3
+                label.form-label Moeda
+                select.form-select#currencyFilter
+                  option(value="BRL" selected) Real (R$)
+                  option(value="USD") Dólar (US$)
+                  option(value="EUR") Euro (€)
+              .col-md-3.d-flex.align-items-end
+                button.btn.btn-primary.w-100#applyFilters Aplicar Filtros
+
+    // Status de conexão
+    .row
+      .col-12
+        .card.border-0.shadow-sm
+          .card-body.py-2
+            .row.align-items-center
+              .col-md-6
+                small.text-muted
+                  span#connectionStatus
+                    i.fas.fa-circle.text-secondary.me-1
+                    | Verificando conexão...
+              .col-md-6.text-end
+                small.text-muted
+                  | Última atualização: 
+                  span#lastUpdate Carregando...
+
+append scripts
+  script(src="/js/metabase-integration.js")

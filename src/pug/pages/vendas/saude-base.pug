@@ -1,0 +1,179 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/widgets/Stats
+include ../../mixins/home/dashboard/CardStatistics
+include ../../mixins/widgets/Tables
+
+block content
+  +overrideStyles
+
+block mainContent
+  if ENV === 'PROD'
+    +LayoutContentProd
+  else
+    +LayoutContent
+
+  .content
+    .container-fluid
+      h3.mb-3 Saúde da Base - Vendas & Comercial
+      .alert.alert-info.mb-3 Análise da saúde da base de clientes com métricas de atividade e risco.
+
+      // Filtros
+      .row.mb-4
+        .col-12
+          .card
+            .card-body
+              .d-flex.align-items-center.gap-3
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Empresa:
+                  select.form-select.form-select-sm.w-auto#empresa-select
+                    option(value="copaderma") Copaderma
+                    option(value="dermacenter") Dermacenter
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Período:
+                  .btn-group(role="group")
+                    input.btn-check(type="radio" name="periodo" id="30d" value="30" checked)
+                    label.btn.btn-outline-primary.btn-sm(for="30d") 30d
+                    input.btn-check(type="radio" name="periodo" id="60d" value="60")
+                    label.btn.btn-outline-primary.btn-sm(for="60d") 60d
+                    input.btn-check(type="radio" name="periodo" id="90d" value="90")
+                    label.btn.btn-outline-primary.btn-sm(for="90d") 90d
+                    input.btn-check(type="radio" name="periodo" id="120d" value="120")
+                    label.btn.btn-outline-primary.btn-sm(for="120d") 120d
+                    input.btn-check(type="radio" name="periodo" id="360d" value="360")
+                    label.btn.btn-outline-primary.btn-sm(for="360d") 360d
+
+      // KPI Cards Grid
+      .row.g-3.mb-4
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-primary.mb-2 412
+              h5.mb-1 Base Total
+              p.text-muted.mb-0 Total de clientes ativos
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-success.mb-2 138
+              h5.mb-1 Ativos
+              p.text-muted.mb-0 Clientes com compras recentes
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-info.mb-2 22
+              h5.mb-1 Novos
+              p.text-muted.mb-0 Novos clientes no período
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-warning.mb-2 11
+              h5.mb-1 Reativados
+              p.text-muted.mb-0 Clientes que voltaram a comprar
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-danger.mb-2 74
+              h5.mb-1 Em Risco
+              p.text-muted.mb-0 Clientes sem compras há muito tempo
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-secondary.mb-2 33.5%
+              h5.mb-1 Cobertura
+              p.text-muted.mb-0 Percentual de cobertura da base
+
+      // Tabela Clientes em Risco
+      .row
+        .col-12
+          .card
+            .card-header
+              h5.mb-0 Clientes em Risco
+              p.text-muted.mb-0 Clientes que não compram há mais tempo que seu ciclo médio
+            .card-body
+              .table-responsive
+                table.table.table-hover
+                  thead
+                    tr
+                      th Cliente
+                      th Último Pedido
+                      th Ciclo Médio
+                      th Valor Médio (90d)
+                      th Ações
+                  tbody
+                    tr
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-danger.text-danger CA
+                          div
+                            h6.mb-0 Clínica Alpha
+                            small.text-muted São Paulo, SP
+                      td
+                        span.badge.bg-soft-danger.text-danger 78 dias
+                      td 45 dias
+                      td R$ 12.540
+                      td
+                        button.btn.btn-sm.btn-outline-primary Contatar
+                    tr
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-warning.text-warning DB
+                          div
+                            h6.mb-0 Dermacenter BV
+                            small.text-muted Belo Horizonte, MG
+                      td
+                        span.badge.bg-soft-warning.text-warning 92 dias
+                      td 35 dias
+                      td R$ 11.230
+                      td
+                        button.btn.btn-sm.btn-outline-primary Contatar
+                    tr
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-danger.text-danger IL
+                          div
+                            h6.mb-0 Instituto Laser
+                            small.text-muted Rio de Janeiro, RJ
+                      td
+                        span.badge.bg-soft-danger.text-danger 65 dias
+                      td 30 dias
+                      td R$ 8.750
+                      td
+                        button.btn.btn-sm.btn-outline-primary Contatar
+                    tr
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-warning.text-warning ES
+                          div
+                            h6.mb-0 Estética Sublime
+                            small.text-muted Curitiba, PR
+                      td
+                        span.badge.bg-soft-warning.text-warning 58 dias
+                      td 40 dias
+                      td R$ 9.890
+                      td
+                        button.btn.btn-sm.btn-outline-primary Contatar
+
+  script.
+    // Mock data para demonstração
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Saúde da Base - Dashboard carregado');
+      
+      // Simular atualização de dados baseado nos filtros
+      const empresaSelect = document.getElementById('empresa-select');
+      const periodoInputs = document.querySelectorAll('input[name="periodo"]');
+      
+      function atualizarDados() {
+        const empresa = empresaSelect.value;
+        const periodo = document.querySelector('input[name="periodo"]:checked').value;
+        console.log(`Atualizando dados para ${empresa} - ${periodo} dias`);
+        // Aqui seria feita a chamada para o Supabase/Metabase
+      }
+      
+      empresaSelect.addEventListener('change', atualizarDados);
+      periodoInputs.forEach(input => {
+        input.addEventListener('change', atualizarDados);
+      });
+    });

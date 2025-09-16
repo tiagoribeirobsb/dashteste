@@ -1,0 +1,358 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/widgets/Stats
+include ../../mixins/home/dashboard/CardStatistics
+
+block content
+  +overrideStyles
+
+block mainContent
+  if ENV === 'PROD'
+    +LayoutContentProd
+  else
+    +LayoutContent
+
+  .content
+    .container-fluid
+      h3.mb-3 Status Pedidos - Vendas & Comercial
+      .alert.alert-info.mb-3 Acompanhamento do status dos pedidos e análise do pipeline de vendas.
+
+      // Filtros
+      .row.mb-4
+        .col-12
+          .card
+            .card-body
+              .d-flex.align-items-center.gap-3.flex-wrap
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Empresa:
+                  select.form-select.form-select-sm.w-auto#empresa-select
+                    option(value="copaderma") Copaderma
+                    option(value="dermacenter") Dermacenter
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Período:
+                  .btn-group(role="group")
+                    input.btn-check(type="radio" name="periodo" id="7d" value="7")
+                    label.btn.btn-outline-primary.btn-sm(for="7d") 7d
+                    input.btn-check(type="radio" name="periodo" id="30d" value="30" checked)
+                    label.btn.btn-outline-primary.btn-sm(for="30d") 30d
+                    input.btn-check(type="radio" name="periodo" id="90d" value="90")
+                    label.btn.btn-outline-primary.btn-sm(for="90d") 90d
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Status:
+                  select.form-select.form-select-sm.w-auto#status-select
+                    option(value="todos") Todos
+                    option(value="paid") Pagos
+                    option(value="shipped") Enviados
+                    option(value="canceled") Cancelados
+                    option(value="pending") Pendentes
+
+      // Cards de Resumo
+      .row.g-3.mb-4
+        .col-md-6.col-xl-3
+          .card.h-100.border-success
+            .card-body.text-center
+              .display-4.text-success.mb-2 156
+              h5.mb-1 Pagos
+              p.text-muted.mb-2 68.3% do total
+              small.text-success
+                i.fas.fa-arrow-up.me-1
+                | +12% vs mês anterior
+        .col-md-6.col-xl-3
+          .card.h-100.border-primary
+            .card-body.text-center
+              .display-4.text-primary.mb-2 44
+              h5.mb-1 Enviados
+              p.text-muted.mb-2 19.2% do total
+              small.text-primary
+                i.fas.fa-arrow-up.me-1
+                | +5% vs mês anterior
+        .col-md-6.col-xl-3
+          .card.h-100.border-danger
+            .card-body.text-center
+              .display-4.text-danger.mb-2 29
+              h5.mb-1 Cancelados
+              p.text-muted.mb-2 12.5% do total
+              small.text-danger
+                i.fas.fa-arrow-down.me-1
+                | -3% vs mês anterior
+        .col-md-6.col-xl-3
+          .card.h-100.border-warning
+            .card-body.text-center
+              .display-4.text-warning.mb-2 R$ 287k
+              h5.mb-1 Faturamento
+              p.text-muted.mb-2 Total do período
+              small.text-success
+                i.fas.fa-arrow-up.me-1
+                | +18% vs mês anterior
+
+      .row.mb-4
+        // Gráfico Pizza Principal
+        .col-lg-6
+          .card.h-100
+            .card-header
+              h5.mb-0 Distribuição por Status
+              p.text-muted.mb-0 Percentual de pedidos por status
+            .card-body.d-flex.align-items-center.justify-content-center
+              canvas#statusChart(style="max-height: 300px;")
+
+        // Gráfico Donut Faturamento
+        .col-lg-6
+          .card.h-100
+            .card-header
+              h5.mb-0 Faturamento por Status
+              p.text-muted.mb-0 Distribuição do valor por status
+            .card-body.d-flex.align-items-center.justify-content-center
+              canvas#faturamentoChart(style="max-height: 300px;")
+
+      // Tabela Detalhada
+      .row
+        .col-12
+          .card
+            .card-header.d-flex.justify-content-between.align-items-center
+              div
+                h5.mb-0 Pedidos Recentes
+                p.text-muted.mb-0 Últimos pedidos com status atualizado
+              .d-flex.gap-2
+                button.btn.btn-sm.btn-outline-primary
+                  i.fas.fa-filter.me-1
+                  | Filtrar
+                button.btn.btn-sm.btn-outline-primary
+                  i.fas.fa-download.me-1
+                  | Exportar
+            .card-body
+              .table-responsive
+                table.table.table-hover
+                  thead
+                    tr
+                      th Pedido
+                      th Cliente
+                      th Data
+                      th Valor
+                      th Status
+                      th Ações
+                  tbody
+                    tr
+                      td
+                        strong #PED-2024-001
+                        br
+                        small.text-muted Copaderma
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-sm.me-2
+                            .avatar-name.rounded-circle.bg-soft-primary.text-primary IL
+                          div
+                            h6.mb-0.small Instituto L
+                            small.text-muted São Paulo, SP
+                      td
+                        | 15/01/2024
+                        br
+                        small.text-muted 14:30
+                      td R$ 2.450
+                      td
+                        span.badge.bg-success Pago
+                      td
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary
+                            i.fas.fa-eye
+                          button.btn.btn-outline-primary
+                            i.fas.fa-edit
+                    tr
+                      td
+                        strong #PED-2024-002
+                        br
+                        small.text-muted Copaderma
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-sm.me-2
+                            .avatar-name.rounded-circle.bg-soft-success.text-success CA
+                          div
+                            h6.mb-0.small Clínica Alpha
+                            small.text-muted São Paulo, SP
+                      td
+                        | 15/01/2024
+                        br
+                        small.text-muted 11:15
+                      td R$ 1.890
+                      td
+                        span.badge.bg-primary Enviado
+                      td
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary
+                            i.fas.fa-eye
+                          button.btn.btn-outline-primary
+                            i.fas.fa-edit
+                    tr
+                      td
+                        strong #PED-2024-003
+                        br
+                        small.text-muted Copaderma
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-sm.me-2
+                            .avatar-name.rounded-circle.bg-soft-info.text-info DB
+                          div
+                            h6.mb-0.small Dermacenter BV
+                            small.text-muted Belo Horizonte, MG
+                      td
+                        | 14/01/2024
+                        br
+                        small.text-muted 16:45
+                      td R$ 3.200
+                      td
+                        span.badge.bg-danger Cancelado
+                      td
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary
+                            i.fas.fa-eye
+                          button.btn.btn-outline-primary
+                            i.fas.fa-edit
+                    tr
+                      td
+                        strong #PED-2024-004
+                        br
+                        small.text-muted Copaderma
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-sm.me-2
+                            .avatar-name.rounded-circle.bg-soft-warning.text-warning ES
+                          div
+                            h6.mb-0.small Estética Sublime
+                            small.text-muted Curitiba, PR
+                      td
+                        | 14/01/2024
+                        br
+                        small.text-muted 09:30
+                      td R$ 1.650
+                      td
+                        span.badge.bg-warning Pendente
+                      td
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary
+                            i.fas.fa-eye
+                          button.btn.btn-outline-primary
+                            i.fas.fa-edit
+                    tr
+                      td
+                        strong #PED-2024-005
+                        br
+                        small.text-muted Copaderma
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-sm.me-2
+                            .avatar-name.rounded-circle.bg-soft-secondary.text-secondary BC
+                          div
+                            h6.mb-0.small Beauty Center
+                            small.text-muted Rio de Janeiro, RJ
+                      td
+                        | 13/01/2024
+                        br
+                        small.text-muted 13:20
+                      td R$ 2.100
+                      td
+                        span.badge.bg-success Pago
+                      td
+                        .btn-group.btn-group-sm
+                          button.btn.btn-outline-primary
+                            i.fas.fa-eye
+                          button.btn.btn-outline-primary
+                            i.fas.fa-edit
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dados para gráfico de status (pizza)
+      const statusData = {
+        labels: ['Pagos', 'Enviados', 'Cancelados', 'Pendentes'],
+        datasets: [{
+          data: [68.3, 19.2, 12.5, 8.0],
+          backgroundColor: ['#00d97e', '#2c7be5', '#e63757', '#ffb400'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      };
+
+      const statusConfig = {
+        type: 'doughnut',
+        data: statusData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 20,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': ' + context.parsed + '%';
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // Dados para gráfico de faturamento (donut)
+      const faturamentoData = {
+        labels: ['Pagos', 'Enviados', 'Cancelados', 'Pendentes'],
+        datasets: [{
+          data: [195000, 55000, 25000, 12000],
+          backgroundColor: ['#00d97e', '#2c7be5', '#e63757', '#ffb400'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      };
+
+      const faturamentoConfig = {
+        type: 'doughnut',
+        data: faturamentoData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 20,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': R$ ' + context.parsed.toLocaleString('pt-BR');
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // Inicializar gráficos
+      const statusCtx = document.getElementById('statusChart').getContext('2d');
+      new Chart(statusCtx, statusConfig);
+
+      const faturamentoCtx = document.getElementById('faturamentoChart').getContext('2d');
+      new Chart(faturamentoCtx, faturamentoConfig);
+
+      // Event listeners para filtros
+      const empresaSelect = document.getElementById('empresa-select');
+      const statusSelect = document.getElementById('status-select');
+      const periodoInputs = document.querySelectorAll('input[name="periodo"]');
+      
+      function atualizarDados() {
+        const empresa = empresaSelect.value;
+        const status = statusSelect.value;
+        const periodo = document.querySelector('input[name="periodo"]:checked').value;
+        console.log(`Atualizando status para ${empresa} - Status: ${status} - ${periodo} dias`);
+        // Aqui seria feita a chamada para o Supabase/Metabase
+      }
+      
+      empresaSelect.addEventListener('change', atualizarDados);
+      statusSelect.addEventListener('change', atualizarDados);
+      periodoInputs.forEach(input => {
+        input.addEventListener('change', atualizarDados);
+      });
+    });

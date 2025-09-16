@@ -1,0 +1,150 @@
+//- src/pug/pages/upload.pug
+//- Página Uploads integrada ao tema (LayoutTheme).
+//- Três formulários que postam CSV para o proxy Nginx do servidor (porta 8080).
+
+extends ../layouts/LayoutTheme
+
+append content
+  .container-xxl.px-3.px-md-4.my-4
+    .row.g-3
+      //- Card 1 — Vendas por dia (14d)
+      .col-12.col-lg-6
+        .card.h-100
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Vendas por dia (14d) — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/sales_daily_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/daily-sales")
+              .mb-3
+                label.form-label(for="tenant1") Tenant
+                input#tenant1.form-control(name="tenant" value="default" required)
+              .mb-3
+                label.form-label(for="file1") Arquivo CSV
+                input#file1.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+      //- Card 2 — Status dos pedidos (14d)
+      .col-12.col-lg-6
+        .card.h-100
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Status dos pedidos (14d) — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/sales_status_mix_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/order-status")
+              .mb-3
+                label.form-label(for="tenant2") Tenant
+                input#tenant2.form-control(name="tenant" value="default" required)
+              .mb-3
+                label.form-label(for="file2") Arquivo CSV
+                input#file2.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+      //- Card 3 — Top 20 clientes (30d)
+      .col-12
+        .card
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Top 20 clientes (30d) — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/top_customers_30d_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/top-clients")
+              .row.g-3
+                .col-md-3
+                  label.form-label(for="tenant3") Tenant
+                  input#tenant3.form-control(name="tenant" value="default" required)
+                .col-md-9
+                  label.form-label(for="file3") Arquivo CSV
+                  input#file3.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary.mt-3(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+      //- Card 4 — Metas (MTD)
+      .col-12
+        .card
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Metas (MTD) — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/goals_mtd_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/monthly-targets")
+              .row.g-3
+                .col-md-3
+                  label.form-label(for="tenant4") Tenant
+                  input#tenant4.form-control(name="tenant" value="default" required)
+                .col-md-9
+                  label.form-label(for="file4") Arquivo CSV
+                  input#file4.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary.mt-3(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+      //- Card 5 — Base de clientes (master)
+      .col-12.col-lg-6
+        .card.h-100
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Base de clientes — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/clients_master_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/clients-master")
+              .mb-3
+                label.form-label(for="tenant5") Tenant
+                input#tenant5.form-control(name="tenant" value="default" required)
+              .mb-3
+                label.form-label(for="file5") Arquivo CSV
+                input#file5.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+      //- Card 6 — Vendas por cliente (diário)
+      .col-12.col-lg-6
+        .card.h-100
+          .card-header.d-flex.align-items-center
+            h5.mb-0 Vendas por cliente (diário) — Upload
+            a.ms-auto(href=`http://164.90.132.243:8080/upload-templates/sales_by_customer_template.csv` download) Baixar template
+          .card-body
+            form.upload-form(data-endpoint="/upload-proxy/sales-by-customer")
+              .mb-3
+                label.form-label(for="tenant6") Tenant
+                input#tenant6.form-control(name="tenant" value="default" required)
+              .mb-3
+                label.form-label(for="file6") Arquivo CSV
+                input#file6.form-control(type="file" name="file" accept=".csv" required)
+              button.btn.btn-primary(type="submit") Enviar CSV
+              .mt-3.alert.d-none(role="alert")
+
+append scripts
+  script.
+    (function () {
+      // MVP: proxy remoto (quando migrar p/ domínio, troque para const actionBase = '')
+      const actionBase = `http://164.90.132.243:8080`;
+      document.querySelectorAll('.upload-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const alertBox = form.querySelector('.alert');
+          alertBox.className = 'alert d-none';
+          alertBox.textContent = '';
+
+          const file = form.querySelector('input[name="file"]').files[0];
+          const tenant = form.querySelector('input[name="tenant"]').value.trim();
+          if (!file || !tenant) {
+            alertBox.className = 'alert alert-warning';
+            alertBox.textContent = 'Informe tenant e selecione um CSV.';
+            return;
+          }
+
+          const fd = new FormData();
+          fd.append('file', file);
+          const endpoint = actionBase + form.dataset.endpoint + '?tenant=' + encodeURIComponent(tenant);
+
+          try {
+            const res = await fetch(endpoint, { method: 'POST', body: fd });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Falha no upload');
+            alertBox.className = 'alert alert-success';
+            alertBox.textContent = 'OK: ' + data.rows_ok + ' linhas, ' + data.rows_error + ' erros.';
+          } catch (err) {
+            alertBox.className = 'alert alert-danger';
+            alertBox.textContent = 'Erro: ' + err.message;
+          }
+        });
+      });
+    })();

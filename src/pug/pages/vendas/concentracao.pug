@@ -1,0 +1,282 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/widgets/Stats
+include ../../mixins/home/dashboard/CardStatistics
+
+block content
+  +overrideStyles
+
+block mainContent
+  if ENV === 'PROD'
+    +LayoutContentProd
+  else
+    +LayoutContent
+
+  .content
+    .container-fluid
+      h3.mb-3 Concentração Pareto - Vendas & Comercial
+      .alert.alert-info.mb-3 Análise da concentração de vendas por cliente usando o princípio de Pareto (80/20).
+
+      // Filtros
+      .row.mb-4
+        .col-12
+          .card
+            .card-body
+              .d-flex.align-items-center.gap-3
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Empresa:
+                  select.form-select.form-select-sm.w-auto#empresa-select
+                    option(value="copaderma") Copaderma
+                    option(value="dermacenter") Dermacenter
+                .d-flex.align-items-center.gap-2
+                  label.form-label.mb-0 Período:
+                  .btn-group(role="group")
+                    input.btn-check(type="radio" name="periodo" id="30d" value="30")
+                    label.btn.btn-outline-primary.btn-sm(for="30d") 30d
+                    input.btn-check(type="radio" name="periodo" id="90d" value="90" checked)
+                    label.btn.btn-outline-primary.btn-sm(for="90d") 90d
+                    input.btn-check(type="radio" name="periodo" id="180d" value="180")
+                    label.btn.btn-outline-primary.btn-sm(for="180d") 180d
+                    input.btn-check(type="radio" name="periodo" id="360d" value="360")
+                    label.btn.btn-outline-primary.btn-sm(for="360d") 360d
+
+      // HHI Card
+      .row.mb-4
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-warning.mb-2 0.236
+              h5.mb-1 Índice HHI
+              p.text-muted.mb-2 Herfindahl-Hirschman Index
+              span.badge.bg-soft-warning.text-warning Concentração Moderada
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-primary.mb-2 22.1%
+              h5.mb-1 Top Cliente
+              p.text-muted.mb-2 Instituto L
+              span.badge.bg-soft-primary.text-primary Maior Participação
+        .col-md-6.col-xl-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-success.mb-2 46.1%
+              h5.mb-1 Top 3 Clientes
+              p.text-muted.mb-2 Concentração acumulada
+              span.badge.bg-soft-success.text-success Dentro do Esperado
+
+      // Gráfico Pareto
+      .row.mb-4
+        .col-12
+          .card
+            .card-header
+              h5.mb-0 Análise de Pareto - Concentração por Cliente
+              p.text-muted.mb-0 Distribuição de vendas e participação acumulada
+            .card-body
+              canvas#paretoChart(style="height: 400px;")
+
+      // Tabela Detalhada
+      .row
+        .col-12
+          .card
+            .card-header
+              h5.mb-0 Ranking de Clientes por Faturamento
+              p.text-muted.mb-0 Detalhamento da participação de cada cliente
+            .card-body
+              .table-responsive
+                table.table.table-hover
+                  thead
+                    tr
+                      th #
+                      th Cliente
+                      th Faturamento
+                      th Participação
+                      th Acumulado
+                      th Classificação
+                  tbody
+                    tr
+                      td 1
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-primary.text-primary IL
+                          div
+                            h6.mb-0 Instituto L
+                            small.text-muted São Paulo, SP
+                      td R$ 48.570
+                      td
+                        .d-flex.align-items-center
+                          .progress.flex-1.me-2(style="height: 8px;")
+                            .progress-bar.bg-primary(style="width: 22.1%;")
+                          span 22.1%
+                      td 22.1%
+                      td
+                        span.badge.bg-primary Classe A
+                    tr
+                      td 2
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-success.text-success CA
+                          div
+                            h6.mb-0 Clínica Alpha
+                            small.text-muted São Paulo, SP
+                      td R$ 32.791
+                      td
+                        .d-flex.align-items-center
+                          .progress.flex-1.me-2(style="height: 8px;")
+                            .progress-bar.bg-success(style="width: 14.9%;")
+                          span 14.9%
+                      td 37.0%
+                      td
+                        span.badge.bg-success Classe A
+                    tr
+                      td 3
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-info.text-info DB
+                          div
+                            h6.mb-0 Dermacenter BV
+                            small.text-muted Belo Horizonte, MG
+                      td R$ 20.045
+                      td
+                        .d-flex.align-items-center
+                          .progress.flex-1.me-2(style="height: 8px;")
+                            .progress-bar.bg-info(style="width: 9.1%;")
+                          span 9.1%
+                      td 46.1%
+                      td
+                        span.badge.bg-info Classe B
+                    tr
+                      td 4
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-warning.text-warning ES
+                          div
+                            h6.mb-0 Estética Sublime
+                            small.text-muted Curitiba, PR
+                      td R$ 18.230
+                      td
+                        .d-flex.align-items-center
+                          .progress.flex-1.me-2(style="height: 8px;")
+                            .progress-bar.bg-warning(style="width: 8.3%;")
+                          span 8.3%
+                      td 54.4%
+                      td
+                        span.badge.bg-warning Classe B
+                    tr
+                      td 5
+                      td
+                        .d-flex.align-items-center
+                          .avatar.avatar-xl.me-2
+                            .avatar-name.rounded-circle.bg-soft-secondary.text-secondary BC
+                          div
+                            h6.mb-0 Beauty Center
+                            small.text-muted Rio de Janeiro, RJ
+                      td R$ 15.890
+                      td
+                        .d-flex.align-items-center
+                          .progress.flex-1.me-2(style="height: 8px;")
+                            .progress-bar.bg-secondary(style="width: 7.2%;")
+                          span 7.2%
+                      td 61.6%
+                      td
+                        span.badge.bg-secondary Classe B
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dados mockados para o gráfico Pareto
+      const paretoData = {
+        labels: ['Instituto L', 'Clínica Alpha', 'Dermacenter BV', 'Estética Sublime', 'Beauty Center', 'Outros'],
+        datasets: [
+          {
+            type: 'bar',
+            label: 'Faturamento (R$)',
+            data: [48570, 32791, 20045, 18230, 15890, 84474],
+            backgroundColor: ['#2c7be5', '#00d97e', '#39afd1', '#ffb400', '#6c757d', '#e3ebf0'],
+            yAxisID: 'y'
+          },
+          {
+            type: 'line',
+            label: 'Acumulado (%)',
+            data: [22.1, 37.0, 46.1, 54.4, 61.6, 100],
+            borderColor: '#fd7e14',
+            backgroundColor: 'rgba(253, 126, 20, 0.1)',
+            fill: false,
+            tension: 0.4,
+            yAxisID: 'y1'
+          }
+        ]
+      };
+
+      const paretoConfig = {
+        data: paretoData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Análise de Pareto - Concentração de Vendas'
+            },
+            legend: {
+              display: true
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                text: 'Faturamento (R$)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return 'R$ ' + value.toLocaleString('pt-BR');
+                }
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Percentual Acumulado (%)'
+              },
+              grid: {
+                drawOnChartArea: false,
+              },
+              ticks: {
+                callback: function(value) {
+                  return value + '%';
+                }
+              },
+              max: 100
+            }
+          }
+        }
+      };
+
+      // Inicializar gráfico
+      const ctx = document.getElementById('paretoChart').getContext('2d');
+      new Chart(ctx, paretoConfig);
+
+      // Event listeners para filtros
+      const empresaSelect = document.getElementById('empresa-select');
+      const periodoInputs = document.querySelectorAll('input[name="periodo"]');
+      
+      function atualizarDados() {
+        const empresa = empresaSelect.value;
+        const periodo = document.querySelector('input[name="periodo"]:checked').value;
+        console.log(`Atualizando concentração para ${empresa} - ${periodo} dias`);
+        // Aqui seria feita a chamada para o Supabase/Metabase
+      }
+      
+      empresaSelect.addEventListener('change', atualizarDados);
+      periodoInputs.forEach(input => {
+        input.addEventListener('change', atualizarDados);
+      });
+    });
